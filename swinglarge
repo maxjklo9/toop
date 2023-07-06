@@ -1,0 +1,76 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class GUIProgram extends JFrame {
+    private JButton loadAllButton;
+    private JButton[] buttons;
+    private JTextArea[] textAreas;
+
+    public GUIProgram() {
+        setTitle("Main Page");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        loadAllButton = new JButton("Load All");
+        loadAllButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < buttons.length; i++) {
+                    buttons[i].setEnabled(true);
+                }
+            }
+        });
+        add(loadAllButton);
+
+        buttons = new JButton[10];
+        textAreas = new JTextArea[10];
+        for (int i = 0; i < 10; i++) {
+            buttons[i] = new JButton("Button " + (i + 1));
+            textAreas[i] = new JTextArea(30, 50);
+            textAreas[i].setEditable(false);
+
+            buttons[i].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int buttonIndex = Integer.parseInt(e.getActionCommand().substring(7)) - 1;
+                    JFrame frame = new JFrame("Window for Button " + (buttonIndex + 1));
+                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frame.setLayout(new BorderLayout());
+                    frame.add(new JLabel("Header: " + buttons[buttonIndex].getText()), BorderLayout.NORTH);
+                    frame.add(new JScrollPane(textAreas[buttonIndex]), BorderLayout.CENTER);
+
+                    JButton loadButton = new JButton("Load");
+                    loadButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            // Perform the specific load function for this button
+                            loadButtonFunction(buttonIndex);
+                        }
+                    });
+                    frame.add(loadButton, BorderLayout.SOUTH);
+
+                    frame.pack();
+                    frame.setVisible(true);
+                }
+            });
+
+            add(buttons[i]);
+        }
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void loadButtonFunction(int buttonIndex) {
+        // Perform the specific load function for the given button index
+        textAreas[buttonIndex].setText("Loading data for Button " + (buttonIndex + 1) + "...");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new GUIProgram();
+            }
+        });
+    }
+}
